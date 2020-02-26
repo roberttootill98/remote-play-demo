@@ -1,3 +1,19 @@
-body {
-  background-color: blue;
+* {
+  padding: 0;
+  margin: 0;
+}
+
+#modalWindow {
+  margin-left: 50%;
+  margin-top: 50%;
+}
+
+.gameContainer {
+  padding: 0.5em;
+  margin: 1em;
+  border: 1px solid black;
+}
+
+#gameCanvas {
+  border: 1em solid blue;
 }
