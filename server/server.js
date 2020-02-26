@@ -12,4 +12,4 @@ async function getItem(req, res) {
 
 app.listen(8080);
 
-app.use('/', express.static('../client', {'extensions': ['html']}));
+app.use('/', express.static('client', {'extensions': ['html']}));
