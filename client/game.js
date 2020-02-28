@@ -15,14 +15,6 @@ let players = [
   }
 ];
 
-/*
-{
-  'id': int,
-  'x': int,
-  'y': int
-}
-*/
-
 function createGame(game) {
   removeModalWindow()
 
@@ -37,7 +29,9 @@ function createGame(game) {
   // draw player 2
   drawPlayerModel(canvas, canvas.width - 50, canvas.height - 50, 1);
 
-  window.addEventListener("keypress", keyPress);
+  //window.addEventListener("keypress", keyPress);
+  window.addEventListener("keydown", keyPress);
+  window.addEventListener("keyup", keyPress);
 }
 
 function joinGame(ev) {
@@ -55,6 +49,8 @@ function joinGame(ev) {
   const canvas = createGameBoard();
   const model = drawPlayerModel(canvas, 50, 50, 1);
   */
+
+  window.addEventListener("keypress", keyPress);
 }
 
 function createGameBoard() {
@@ -95,6 +91,7 @@ const inputs = {
 
 function keyPress(ev) {
   const key = ev['key'];
+  console.log(key);
   const action = inputs[key];
 
   // should get based on cookie
