@@ -15,13 +15,10 @@ let players = [
   }
 ];
 
-function createGame(game) {
-  removeModalWindow()
+async function createGame() {
+  const name = document.getElementById('nameInput').value;
 
-  // start session
-  console.log("creating game...");
-  console.log("id: " + game.id);
-  console.log("name: " + game.name);
+  removeModalWindow();
 
   const canvas = createGameBoard();
   // draw player 1
@@ -29,13 +26,20 @@ function createGame(game) {
   // draw player 2
   drawPlayerModel(canvas, canvas.width - 50, canvas.height - 50, 1);
 
+  // post game
+  const game = await postGame(name, canvas);
+
+  console.log("creating game...");
+  console.log("game cookie: " + game.gameCookie);
+  console.log("name: " + game.name);
+
   //window.addEventListener("keypress", keyPress);
   window.addEventListener("keydown", keyPress);
   window.addEventListener("keyup", keyPress);
 }
 
 function joinGame(ev) {
-  removeModalWindow()
+  removeModalWindow();
 
   // extract info from elements
   const parent = ev.currentTarget;
@@ -77,6 +81,46 @@ function drawPlayerModel(canvas, x, y, id) {
   players[id].y = y;
 }
 
+// api call
+async function postGame(name, canvas) {
+  // host details
+  let query = `?hostCookie=${clientContent.cookie}`;
+  // game details
+  query = query + `&name=${name}`;
+  // add canvas
+  // maybe try to check which pixels have changed
+  /*
+  const ctx = canvas.getContext('2d');
+  // x, y, w, h
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const imageString = stringifyImageData(imageData.data);
+  query = query + `&imageData=${imageString}`;
+  */
+
+  const url = '/api/game' + query;
+
+  const response = await fetch(url, {method: 'POST'});
+  if(response.ok) {
+    return await response.json();
+  } else {
+    console.error("failed to post game");
+  }
+}
+
+function stringifyImageData(imageData) {
+  let imageString = '';
+
+  for(let pixel of imageData) {
+    imageString = imageString + pixel;
+  }
+  return imageString;
+}
+
+function encodeImageData(imageString) {
+  let imageData;
+  return imageData;
+}
+
 // inputs
 const inputs = {
   "w": upP1,
@@ -91,7 +135,6 @@ const inputs = {
 
 function keyPress(ev) {
   const key = ev['key'];
-  console.log(key);
   const action = inputs[key];
 
   // should get based on cookie

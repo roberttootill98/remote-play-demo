@@ -1,37 +1,27 @@
 'use strict'
 
+// npm modules
 const express = require('express');
 const app = express();
-const session = require('express-session');
-//const db = require('./modelSQL.js');
+// our modules
+const db = require('./modelSQL.js');
+const auth = require('./auth-server.js');
 
 app.listen(8080);
 
 app.use('/', express.static('client', {'extensions': ['html']}));
-//app.set('trust proxy', 1);
-app.use(session({
-  genid: function(req) {
-    return genuuid()
-  },
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  //cookie: {secure: true}
-}));
-
-// session handling
-function genuuid() {
-  // should be validated
-  return Math.floor(Math.random() * 1000000000);
-}
 
 // http verbs
 app.get('/api/games', getGames);
 app.post('/api/game', postGame);
+// auth
+app.post('/api/login', auth.login);
+
+db.init();
 
 // returns all sessions
 async function getGames(req, res) {
-  console.log(req.session.id);
+  //console.log(req.session.id);
   //console.log(req.session.cookie);
   res.json(games);
 }
@@ -39,12 +29,12 @@ async function getGames(req, res) {
 // adds a new session to sessions json
 async function postGame(req, res) {
   try {
+    const hostCookie = req.query.hostCookie;
     const name = req.query.name;
-    const id = req.session.id;
-    const game = {'name': name, 'id': id};
+    // create game json
+    const game = {'name': name, 'id': auth.generateCookie()};
 
-    console.log(game);
-    //console.log(store.get(req.session.id));
+    console.log(`User ${auth.getClient('cookie', hostCookie).username} just created a game!`);
 
     games.push(game);
     res.json(game);

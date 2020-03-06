@@ -1,17 +1,17 @@
 'use strict'
 
 async function boot() {
-  // prompt modal window
-  const games = await getGames();
-  promptModalWindow(games);
+  if(clientContent.cookie) {
+    // prompt modal window
+    const games = await getGames();
+    promptModalWindow(games);
+  } else {
+    // prompt login
+    promptLoginWindow();
+  }
 }
 
 async function getGames() {
-  /*
-  const response = await fetch('/api/games');
-  return await response.json();
-  */
-
   const response = await fetch('/api/games');
   if(response.ok) {
     return await response.json();
@@ -81,7 +81,7 @@ function newGameModalWindow() {
   // create
   const create = document.createElement('button');
   container.appendChild(create);
-  create.onclick = createNewGame;
+  create.onclick = createGame;
   create.textContent = 'Done';
   create.classList.add('button');
   // cancel
@@ -90,21 +90,6 @@ function newGameModalWindow() {
   cancel.onclick = removeModalWindow;
   cancel.textContent = 'Cancel';
   cancel.classList.add('button');
-}
-
-async function createNewGame() {
-  // get fields
-  const name = document.getElementById('nameInput').value;
-
-  // post request
-  const url = `/api/game?name=${name}`;
-  const response = await fetch(url, {method: 'POST'});
-  const game = await response.json()
-
-  // get id from response
-  console.log(game);
-
-  createGame(game);
 }
 
 async function removeModalWindow() {

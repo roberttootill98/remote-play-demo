@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"hi\"",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "dev": "npx nodemon server.js",
+    "init_database": "mysql -u root -p < server/init.sql",
+    "populate_database": "mysql -u root -p < server/populate.sql"
   },
   "repository": {
     "type": "git",
@@ -23,6 +26,11 @@
   "homepage": "https://github.com/roberttootill98/remote-play-demo#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "express-session": "1.17.0"
+    "express-session": "^1.17.0",
+    "mysql2": "^2.1.0",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
