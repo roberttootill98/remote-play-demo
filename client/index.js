@@ -11,13 +11,6 @@ async function boot() {
   }
 }
 
-async function getGames() {
-  const response = await fetch('/api/games');
-  if(response.ok) {
-    return await response.json();
-  }
-}
-
 function promptModalWindow(games) {
   // create container
   const container = document.createElement('div');
@@ -44,7 +37,7 @@ function promptModalWindow(games) {
     const idLabel = document.createElement('p');
     gameContainer.appendChild(idLabel);
     idLabel.classList.add('idLabel');
-    idLabel.textContent = game.id;
+    idLabel.textContent = game.gameID;
 
     gameContainer.onclick = joinGame;
   }

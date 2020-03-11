@@ -2,18 +2,22 @@
 
 // a two player game
 
-let players = [
-  {
-    'id': 0,
-    'x': 0,
-    'y': 0
-  },
-  {
-    'id': 1,
-    'x': 0,
-    'y': 0
-  }
-];
+let gameData = {
+  playerData: [
+    {
+      'id': 0,
+      'x': 0,
+      'y': 0
+    },
+    {
+      'id': 1,
+      'x': 0,
+      'y': 0
+    }
+  ]
+};
+
+
 
 async function createGame() {
   const name = document.getElementById('nameInput').value;
@@ -28,31 +32,37 @@ async function createGame() {
 
   // post game
   const game = await postGame(name, canvas);
+  gameData.gameID = game.gameID;
+  gameData.name = game.name;
+
+  await updateGameData();
 
   console.log("creating game...");
-  console.log("game cookie: " + game.gameCookie);
+  console.log("game cookie: " + game.gameID);
   console.log("name: " + game.name);
 
-  //window.addEventListener("keypress", keyPress);
-  window.addEventListener("keydown", keyPress);
-  window.addEventListener("keyup", keyPress);
+  window.addEventListener("keypress", keyPress);
+  //window.addEventListener("keydown", keyPress);
+  //window.addEventListener("keyup", keyPress);
 }
 
-function joinGame(ev) {
+async function joinGame(ev) {
   removeModalWindow();
 
   // extract info from elements
   const parent = ev.currentTarget;
   const name = parent.childNodes[0].textContent;
-  const id = parent.childNodes[1].textContent;
+  const gameID = parent.childNodes[1].textContent;
 
-  console.log("joining: " + id);
+  console.log("Joining: " + name);
 
   // should get canvas from session
-  /*
   const canvas = createGameBoard();
-  const model = drawPlayerModel(canvas, 50, 50, 1);
-  */
+
+  // get gameData from server
+  gameData = await getGameData(gameID);
+
+  drawPlayerModels(canvas);
 
   window.addEventListener("keypress", keyPress);
 }
@@ -67,9 +77,19 @@ function createGameBoard() {
   return canvas;
 }
 
-function drawPlayerModel(canvas, x, y, id) {
-  const template = document.getElementById('stickman');
+// draws players models according to game data
+function drawPlayerModels(canvas) {
+  for(let player of gameData.playerData) {
+    // draw graphics
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, 40, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+}
 
+// draws a specific playerModel(index) at a given xy
+function drawPlayerModel(canvas, x, y, index) {
   // draw graphics
   const ctx = canvas.getContext('2d');
   ctx.beginPath();
@@ -77,48 +97,8 @@ function drawPlayerModel(canvas, x, y, id) {
   ctx.stroke();
 
   // update data
-  players[id].x = x;
-  players[id].y = y;
-}
-
-// api call
-async function postGame(name, canvas) {
-  // host details
-  let query = `?hostCookie=${clientContent.cookie}`;
-  // game details
-  query = query + `&name=${name}`;
-  // add canvas
-  // maybe try to check which pixels have changed
-  /*
-  const ctx = canvas.getContext('2d');
-  // x, y, w, h
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const imageString = stringifyImageData(imageData.data);
-  query = query + `&imageData=${imageString}`;
-  */
-
-  const url = '/api/game' + query;
-
-  const response = await fetch(url, {method: 'POST'});
-  if(response.ok) {
-    return await response.json();
-  } else {
-    console.error("failed to post game");
-  }
-}
-
-function stringifyImageData(imageData) {
-  let imageString = '';
-
-  for(let pixel of imageData) {
-    imageString = imageString + pixel;
-  }
-  return imageString;
-}
-
-function encodeImageData(imageString) {
-  let imageData;
-  return imageData;
+  gameData.playerData[index].x = x;
+  gameData.playerData[index].y = y;
 }
 
 // inputs
@@ -133,63 +113,69 @@ const inputs = {
   "j": leftP2
 }
 
-function keyPress(ev) {
+async function keyPress(ev) {
   const key = ev['key'];
   const action = inputs[key];
 
   // should get based on cookie
-  action();
+  if(action) {
+    action();
 
-  // get players
-  const player1 = players[0];
-  const player2 = players[1];
+    // get players
+    const player1 = gameData.playerData[0];
+    const player2 = gameData.playerData[1];
 
-  const canvas = document.getElementById('gameCanvas');
+    const canvas = document.getElementById('gameCanvas');
 
-  // clear canvas
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    // clear canvas
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-  // draw each player again
-  drawPlayerModel(canvas, player1.x, player1.y, 0);
-  drawPlayerModel(canvas, player2.x, player2.y, 1);
+    // draw items again
+
+    // draw each player again
+    drawPlayerModel(canvas, player1.x, player1.y, 0);
+    drawPlayerModel(canvas, player2.x, player2.y, 1);
+
+    await updateGameData();
+  }
 }
 
 function upP1() {
-  const player1 = players[0];
+  const player1 = gameData.playerData[0];
   player1.y = player1.y - 5;
 }
 
 function rightP1() {
-  const player1 = players[0];
+  const player1 = gameData.playerData[0];
   player1.x = player1.x + 5;
 }
 
 function downP1() {
-  const player1 = players[0];
+  const player1 = gameData.playerData[0];
   player1.y = player1.y + 5;
 }
 
 function leftP1() {
-  const player1 = players[0];
+  const player1 = gameData.playerData[0];
   player1.x = player1.x - 5;
 }
 
 function upP2() {
-  const player2 = players[1];
+  const player2 = gameData.playerData[1];
   player2.y = player2.y - 5;
 }
 
 function rightP2() {
-  const player2 = players[1];
+  const player2 = gameData.playerData[1];
   player2.x = player2.x + 5;
 }
 
 function downP2() {
-  const player2 = players[1];
+  const player2 = gameData.playerData[1];
   player2.y = player2.y + 5;
 }
 
 function leftP2() {
-  const player2 = players[1];
+  const player2 = gameData.playerData[1];
   player2.x = player2.x - 5;
 }
