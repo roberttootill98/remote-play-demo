@@ -41,15 +41,51 @@ async function updateGameData() {
 
 // gets game data with game id
 async function getGameData(gameID) {
-  const url = 'api/game?gameID=' + gameID;
+  const url = `api/game?gameID=${gameID}&cookie=${clientContent.cookie}`;
 
   const response = await fetch(url);
   if(response.ok) {
-    let game = await response.json();
-    console.log(game);
-    return game;
-    //return await response.json();
+    return await response.json();
   } else {
     console.error("failed to get game");
+  }
+}
+
+async function startListen() {
+  if (!!window.EventSource) {
+    const url = `/api/listenGame?gameID=${gameData.gameID}&cookie=${clientContent.cookie}`;
+    const source = new EventSource(url);
+
+    // deal with server sent event
+    source.addEventListener('message', event => {
+      gameData = JSON.parse(event.data);
+
+      // redraw elements
+      const canvas = document.getElementById('gameCanvas');
+      // clear canvas
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayerModels(canvas);
+    });
+
+    source.addEventListener('open', event => {
+      const stateElement = document.getElementById('state');
+      console.log('Connected!');
+      stateElement.textContent = 'Connected';
+    });
+
+    source.addEventListener('error', event => {
+      const stateElement = document.getElementById('state');
+      if (event.eventPhase == EventSource.CLOSED) {
+        source.close();
+      }
+      if (event.target.readyState == EventSource.CLOSED) {
+        stateElement.textContent = 'Disconnected';
+      }
+      if (event.target.readyState == EventSource.CONNECTING) {
+        stateElement.textContent = 'Connecting...';
+      }
+    });
+  } else {
+    console.log('Your browser does not support server sent events');
   }
 }

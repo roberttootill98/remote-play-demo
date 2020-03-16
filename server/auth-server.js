@@ -67,6 +67,11 @@ function getClient(field, value) {
   }
 }
 
+function addClientRes(cookie, res) {
+  const client = getClient('cookie', cookie);
+  client.res = res;
+}
+
 // hashes string for debugging
 function hashString(string) {
   const hash = crypto.createHash('md5');
@@ -79,5 +84,6 @@ module.exports = {
   generateCookie: generateCookie,
   getClients: getClients,
   getClient: getClient,
+  addClientRes: addClientRes,
   hashString: hashString
 }

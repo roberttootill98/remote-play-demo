@@ -17,8 +17,6 @@ let gameData = {
   ]
 };
 
-
-
 async function createGame() {
   const name = document.getElementById('nameInput').value;
 
@@ -31,19 +29,17 @@ async function createGame() {
   drawPlayerModel(canvas, canvas.width - 50, canvas.height - 50, 1);
 
   // post game
-  const game = await postGame(name, canvas);
-  gameData.gameID = game.gameID;
-  gameData.name = game.name;
+  gameData = await postGame(name, canvas);
 
-  await updateGameData();
+  //await updateGameData();
 
   console.log("creating game...");
-  console.log("game cookie: " + game.gameID);
-  console.log("name: " + game.name);
+  console.log("game cookie: " + gameData.gameID);
+  console.log("name: " + gameData.name);
 
   window.addEventListener("keypress", keyPress);
-  //window.addEventListener("keydown", keyPress);
-  //window.addEventListener("keyup", keyPress);
+
+  await startListen();
 }
 
 async function joinGame(ev) {
@@ -65,6 +61,8 @@ async function joinGame(ev) {
   drawPlayerModels(canvas);
 
   window.addEventListener("keypress", keyPress);
+
+  await startListen();
 }
 
 function createGameBoard() {
