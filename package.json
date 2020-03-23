@@ -9,7 +9,10 @@
     "dev": "npx nodemon server.js",
     "init_database": "mysql -u root -p < server/init.sql",
     "populate_database": "mysql -u root -p < server/populate.sql",
-    "artillery_test": "artillery run loadTest/test.json"
+    "artillery_test_local": "artillery quick --count 10 -n 20 http://127.0.0.1/",
+    "artillery_test": "artillery run loadTest/test.yml",
+    "artillery_demo": "artillery run loadTest/demo.yml",
+    "startTunnel": "lt --port 80"
   },
   "repository": {
     "type": "git",
@@ -17,7 +20,6 @@
   },
   "keywords": [
     "remote-play",
-    "socket"
   ],
   "author": "UP811906",
   "license": "ISC",
@@ -29,7 +31,9 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "mysql2": "^2.1.0",
-    "crypto": "^1.0.1"
+    "crypto": "^1.0.1",
+    "artillery": "^1.6.0",
+    "localtunnel": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

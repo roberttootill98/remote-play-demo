@@ -1,0 +1,14 @@
+config:
+  target: 'http://127.0.0.1:80'
+  phases:
+    - duration: 60
+      arrivalRate: 1
+scenarios:
+  - flow:
+    - post:
+        url: "/api/login?username=Rob&password=myPassword"
+        capture:
+          json: "$.cookie"
+          as: "hostCookie"
+    - post:
+        url: "/api/game?hostCookie={{ hostCookie }}&name=myGame"

@@ -3,13 +3,25 @@
 // npm modules
 const express = require('express');
 const app = express();
+//const localTunnel = require('localtunnel');
 // our modules
 const db = require('./modelSQL.js');
 const auth = require('./auth-server.js');
 
-app.listen(8080);
+app.listen(80);
 
 app.use('/', express.static('client', {'extensions': ['html']}));
+
+// set up tunnel
+/*
+const tunnel = localTunnel(80, { subdomain: 'hello'} (err, tunnel) => {
+  console.log("tunnel started");
+});
+
+tunnel.on('close', function() {
+  console.log("tunnel closed");
+});
+*/
 
 // http verbs
 app.get('/api/game', getGame);
@@ -55,10 +67,9 @@ async function getGames(req, res) {
 // adds a new session to sessions json
 async function postGame(req, res) {
   try {
-    //console.log(res);
-
     const hostCookie = req.query.hostCookie;
     const name = req.query.name;
+
     // create game json
     const game = {
       'name': name,
