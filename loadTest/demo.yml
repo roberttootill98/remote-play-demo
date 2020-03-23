@@ -1,14 +1,46 @@
 config:
   target: 'http://127.0.0.1:80'
   phases:
-    - duration: 60
+    - duration: 1
       arrivalRate: 1
 scenarios:
+  # mimic typical control flow of remote play session
   - flow:
+    # login
     - post:
         url: "/api/login?username=Rob&password=myPassword"
         capture:
           json: "$.cookie"
           as: "hostCookie"
+    # create game
     - post:
         url: "/api/game?hostCookie={{ hostCookie }}&name=myGame"
+        capture:
+          json: "$.gameID"
+          as: "gameID"
+    # start host listen
+    - get:
+        url: "/api/listenGame?gameID={{ gameID }}&cookie={{ hostCookie }}"
+    # make requests from host
+    - loop:
+        - get:
+            url: "/api/games"
+      count: 100
+    # login with new user
+    - post:
+        url: "/api/login?username=Dylan&password=myPassword1"
+        capture:
+          json: "$.cookie"
+          as: "clientCookie"
+    # join host game
+    - get:
+        url: "/api/game?gameID={{ gameID }}&cookie={{ clientCookie }}"
+        capture:
+          json: "$"
+          as: "gameData"
+    # start client listen
+    - get:
+        url: "/api/listenGame?gameID={{ gameID }}&cookie={{ clientCookie }}"
+    # make requests from client
+    - put:
+        url: "/api/game?gameData={{ gameData }}"

@@ -23,7 +23,7 @@ app.post('/api/login', auth.login);
 
 db.init();
 
-// gets a specific game with host cookie
+// gets a specific game with game cookie
 async function getGame(req, res) {
   const gameID = req.query.gameID;
   const clientCookie = req.query.cookie;
@@ -82,6 +82,8 @@ async function postGame(req, res) {
 async function updateGame(req, res) {
   const gameData = JSON.parse(req.query.gameData);
 
+  console.log(gameData);
+
   try {
     // get game from server memory
     let gameFound;
@@ -112,6 +114,8 @@ function sendEventsToAll(game) {
       clients.push(auth.getClient('cookie', playerData.id));
     }
   }
+
+  console.log(clients);
 
   clients.forEach(c => c.res.write(`data: ${JSON.stringify(game)}\n\n`))
 }
