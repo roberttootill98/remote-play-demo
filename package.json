@@ -12,7 +12,6 @@
     "artillery_test_local": "artillery quick --count 10 -n 20 http://127.0.0.1/",
     "artillery_test": "artillery run loadTest/test.yml",
     "artillery_demo": "artillery run loadTest/demo.yml",
-    "startTunnel": "lt --port 80"
   },
   "repository": {
     "type": "git",
@@ -33,7 +32,6 @@
     "mysql2": "^2.1.0",
     "crypto": "^1.0.1",
     "artillery": "^1.6.0",
-    "localtunnel": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
