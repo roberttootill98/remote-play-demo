@@ -18,13 +18,10 @@ scenarios:
         capture:
           json: "$.gameID"
           as: "gameID"
-    # start host listen
-    - get:
-        url: "/api/listenGame?gameID={{ gameID }}&cookie={{ hostCookie }}"
     # make requests from host
     - loop:
-        - get:
-            url: "/api/games"
+        - put:
+            url: "/api/game?gameData={{ gameData }}"
       count: 100
     # login with new user
     - post:
@@ -38,9 +35,8 @@ scenarios:
         capture:
           json: "$"
           as: "gameData"
-    # start client listen
-    - get:
-        url: "/api/listenGame?gameID={{ gameID }}&cookie={{ clientCookie }}"
     # make requests from client
-    - put:
-        url: "/api/game?gameData={{ gameData }}"
+    - loop:
+        - put:
+            url: "/api/game?gameData={{ gameData }}"
+      count: 100

@@ -23,23 +23,18 @@ async function createGame() {
   removeModalWindow();
 
   const canvas = createGameBoard();
-  // draw player 1
-  drawPlayerModel(canvas, 50, 50, 0);
-  // draw player 2
-  drawPlayerModel(canvas, canvas.width - 50, canvas.height - 50, 1);
 
   // post game
   gameData = await postGame(name, canvas);
+  // set up socket
+  socket = io("/" + gameData.gameID);
+  socket.on('message', updateReceived);
 
-  //await updateGameData();
+  drawPlayerModels(canvas);
 
-  console.log("creating game...");
-  console.log("game cookie: " + gameData.gameID);
-  console.log("name: " + gameData.name);
+  console.log("Creating game: " + gameData.name);
 
   window.addEventListener("keypress", keyPress);
-
-  await startListen();
 }
 
 async function joinGame(ev) {
@@ -57,12 +52,13 @@ async function joinGame(ev) {
 
   // get gameData from server
   gameData = await getGameData(gameID);
+  // set up socket
+  socket = io("/" + gameData.gameID);
+  socket.on('message', updateReceived);
 
   drawPlayerModels(canvas);
 
   window.addEventListener("keypress", keyPress);
-
-  await startListen();
 }
 
 function createGameBoard() {
@@ -84,19 +80,6 @@ function drawPlayerModels(canvas) {
     ctx.arc(player.x, player.y, 40, 0, 2 * Math.PI);
     ctx.stroke();
   }
-}
-
-// draws a specific playerModel(index) at a given xy
-function drawPlayerModel(canvas, x, y, index) {
-  // draw graphics
-  const ctx = canvas.getContext('2d');
-  ctx.beginPath();
-  ctx.arc(x, y, 40, 0, 2 * Math.PI);
-  ctx.stroke();
-
-  // update data
-  gameData.playerData[index].x = x;
-  gameData.playerData[index].y = y;
 }
 
 // inputs
@@ -131,8 +114,7 @@ async function keyPress(ev) {
     // draw items again
 
     // draw each player again
-    drawPlayerModel(canvas, player1.x, player1.y, 0);
-    drawPlayerModel(canvas, player2.x, player2.y, 1);
+    drawPlayerModels(canvas);
 
     await updateGameData();
   }
