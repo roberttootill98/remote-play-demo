@@ -16,8 +16,10 @@ scenarios:
     - post:
         url: "/api/game?hostCookie={{ hostCookie }}&name=myGame"
         capture:
-          json: "$.gameID"
-          as: "gameID"
+          - json: "$"
+            as: "gameData"
+          - json: "$.gameID"
+            as: "gameID"
     # make requests from host
     - loop:
         - put:
