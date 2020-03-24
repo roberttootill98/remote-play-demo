@@ -73,12 +73,19 @@ function createGameBoard() {
 
 // draws players models according to game data
 function drawPlayerModels(canvas) {
+  let colour = "#FF0000";
+
   for(let player of gameData.playerData) {
     // draw graphics
     const ctx = canvas.getContext('2d');
     ctx.beginPath();
     ctx.arc(player.x, player.y, 40, 0, 2 * Math.PI);
+    ctx.strokeStyle = colour;
     ctx.stroke();
+
+    if(colour == "#FF0000") {
+      colour = "#0000FF";
+    }
   }
 }
 

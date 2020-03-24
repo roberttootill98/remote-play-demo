@@ -1,5 +1,5 @@
 config:
-  target: 'http://127.0.0.1:80'
+  target: 'http://127.0.0.1:3000'
   phases:
     - duration: 1
       arrivalRate: 1
@@ -24,7 +24,7 @@ scenarios:
     - loop:
         - put:
             url: "/api/game?gameData={{ gameData }}"
-      count: 100
+      count: 500
     # login with new user
     - post:
         url: "/api/login?username=Dylan&password=myPassword1"
@@ -41,4 +41,4 @@ scenarios:
     - loop:
         - put:
             url: "/api/game?gameData={{ gameData }}"
-      count: 100
+      count: 500

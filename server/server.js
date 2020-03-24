@@ -3,18 +3,22 @@
 // npm modules
 const express = require('express');
 const app = express();
+const throttle = require("express-throttle");
 // our modules
 const db = require('./modelSQL.js');
 const auth = require('./auth-server.js');
+const toxySetup = require('./toxySetup');
 
-const server = app.listen(80);
+const port = 80;
+
+const server = app.listen(port);
 app.use('/', express.static('client', {'extensions': ['html']}));
 
 const io = require('socket.io')(server);
 
 // http verbs
 app.get('/api/game', getGame);
-app.get('/api/games', getGames);
+app.get('/api/games', throttle({ "rate": "50/s" }), getGames);
 app.post('/api/game', postGame);
 app.put('/api/game', updateGame);
 // auth
@@ -72,8 +76,8 @@ async function postGame(req, res) {
       'name': name,
       'gameID': gameID,
       'playerData': [
-        {'id': hostCookie, 'x': 0, 'y': 0}, // host is player one
-        {'id': null, 'x': 0, 'y': 0}
+        {'id': hostCookie, 'x': 50, 'y': 50}, // host is player one
+        {'id': null, 'x': 250, 'y': 100}
       ]
     };
 
@@ -124,5 +128,6 @@ function getSocket(gameID) {
 
 // in memory data
 let games = [];
-
 let sockets = [];
+
+console.log('Server listening on port:', port);
