@@ -33,7 +33,7 @@ async function updateGameData() {
 
   const response = await fetch(url, {method: 'PUT'});
   if(response.ok) {
-    console.log("game updated!");
+    //console.log("game updated!");
   } else {
     console.error("failed to update game");
   }

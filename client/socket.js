@@ -3,10 +3,8 @@
 let socket;
 
 async function updateReceived(ev) {
-  console.log("update received");
-
   gameData = ev;
-  
+
   // redraw elements
   const canvas = document.getElementById('gameCanvas');
   // clear canvas

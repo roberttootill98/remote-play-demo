@@ -41,6 +41,22 @@ Running the application
 -----------------
 Once all of these steps are completed the server is run by using **npm start**.
 
+Demo details
+=================
+There are two accounts created on the system that can be used.
+
+User 1
+-----------------
+Username: Rob
+Password: myPassword
+
+User 2
+-----------------
+Username: Dylan
+Password: myPassword1
+
+More accounts can be added in the populate.sql file.
+
 Testing
 -----------------
 There are 3 tests that can be run.

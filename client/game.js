@@ -20,7 +20,7 @@ let gameData = {
 async function createGame() {
   const name = document.getElementById('nameInput').value;
 
-  removeModalWindow();
+  document.querySelector('.modalWindow').remove();
 
   const canvas = createGameBoard();
 
@@ -38,12 +38,12 @@ async function createGame() {
 }
 
 async function joinGame(ev) {
-  removeModalWindow();
+  document.querySelector('.modalWindow').remove();
 
   // extract info from elements
   const parent = ev.currentTarget;
   const name = parent.childNodes[0].textContent;
-  const gameID = parent.childNodes[1].textContent;
+  const gameID = parent.id;
 
   console.log("Joining: " + name);
 

@@ -15,7 +15,12 @@ function promptModalWindow(games) {
   // create container
   const container = document.createElement('div');
   document.body.appendChild(container);
-  container.id = 'modalWindow';
+  container.classList.add('modalWindow');
+
+  const title = document.createElement('h3');
+  container.appendChild(title);
+  title.id = 'title';
+  title.textContent = 'Create or Join a Game';
 
   // create container list
   const gameList = document.createElement('ul');
@@ -27,31 +32,36 @@ function promptModalWindow(games) {
     const gameContainer = document.createElement('div');
     gameList.appendChild(gameContainer);
     gameContainer.classList.add('gameContainer');
+    gameContainer.id = game.gameID;
 
     // add name
     const nameLabel = document.createElement('p');
     gameContainer.appendChild(nameLabel);
     nameLabel.classList.add('nameLabel');
     nameLabel.textContent = game.name;
-    // add id
-    const idLabel = document.createElement('p');
-    gameContainer.appendChild(idLabel);
-    idLabel.classList.add('idLabel');
-    idLabel.textContent = game.gameID;
 
     gameContainer.onclick = joinGame;
   }
 
   // add create new button
+  const buttonContainer = document.createElement('div');
+  container.appendChild(buttonContainer);
+  buttonContainer.id = 'buttonContainer';
+
   const createNew = document.createElement('button');
-  container.appendChild(createNew);
+  buttonContainer.appendChild(createNew);
   createNew.onclick = newGameModalWindow;
   createNew.textContent = 'Create new game';
   createNew.classList.add('button');
 }
 
 function newGameModalWindow() {
-  const container = document.getElementById('modalWindow');
+  // remove previous window
+  document.querySelector('.modalWindow').remove();
+
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  container.classList.add('modalWindow');
 
   // delete elements in modal window
   const childNodes = container.childNodes;
@@ -60,34 +70,46 @@ function newGameModalWindow() {
   }
 
   // add entry fields
+  // title
+  const title = document.createElement('h3');
+  container.appendChild(title);
+  title.id = 'title';
+  title.textContent = 'Create a Game';
   // name
   // label
   const nameLabel = document.createElement('p');
   container.appendChild(nameLabel);
+  nameLabel.classList.add('label');
   nameLabel.textContent = 'Name:';
   // input
   const nameInput = document.createElement('input');
   container.appendChild(nameInput);
+  nameInput.classList.add('input');
   nameInput.id = 'nameInput';
 
   // buttons
+  const buttonContainer = document.createElement('div');
+  container.appendChild(buttonContainer);
+  buttonContainer.id = 'buttonContainer';
   // create
   const create = document.createElement('button');
-  container.appendChild(create);
+  buttonContainer.appendChild(create);
   create.onclick = createGame;
-  create.textContent = 'Done';
+  create.textContent = 'Create Game';
   create.classList.add('button');
   // cancel
   const cancel = document.createElement('button');
-  container.appendChild(cancel);
-  cancel.onclick = removeModalWindow;
+  buttonContainer.appendChild(cancel);
+  cancel.onclick = cancelFunc;
   cancel.textContent = 'Cancel';
   cancel.classList.add('button');
 }
 
-async function removeModalWindow() {
+async function cancelFunc() {
   // delete current modalWindow
-  document.getElementById('modalWindow').remove();
+  document.querySelector('.modalWindow').remove();
+
+  boot();
 }
 
 window.addEventListener("load", boot);

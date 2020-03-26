@@ -32,18 +32,26 @@ function promptLoginWindow() {
   const container = document.createElement('div');
   document.body.appendChild(container);
   container.id = 'loginContainer';
+  container.classList.add('modalWindow');
 
+  // title
+  const title = document.createElement('h3');
+  container.appendChild(title);
+  title.id = 'title';
+  title.textContent = 'Login';
   // name
   const nameContainer = document.createElement('div');
   container.appendChild(nameContainer);
   // label
   const nameLabel = document.createElement('p');
   nameContainer.appendChild(nameLabel);
-  nameLabel.textContent = 'Name:';
+  nameLabel.classList.add('label');
+  nameLabel.textContent = 'Username:';
   // input
   const nameInput = document.createElement('input');
   nameContainer.appendChild(nameInput);
   nameInput.id = 'nameInput';
+  nameInput.classList.add('input');
 
   // password
   // name
@@ -52,11 +60,13 @@ function promptLoginWindow() {
   // label
   const passwordLabel = document.createElement('p');
   passwordContainer.appendChild(passwordLabel);
+  passwordLabel.classList.add('label');
   passwordLabel.textContent = 'Password:';
   // input
   const passwordInput = document.createElement('input');
   passwordContainer.appendChild(passwordInput);
   passwordInput.id = 'passwordInput';
+  passwordInput.classList.add('input');
 
   // buttons
   const buttonContainer = document.createElement('div');
@@ -64,8 +74,9 @@ function promptLoginWindow() {
   // submit
   const submitButton = document.createElement('button');
   buttonContainer.appendChild(submitButton);
+  buttonContainer.id = 'buttonContainer';
   submitButton.onclick = submit;
-  submitButton.textContent = 'Submit';
+  submitButton.textContent = 'Login';
 }
 
 async function submit() {
